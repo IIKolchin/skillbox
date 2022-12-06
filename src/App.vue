@@ -1,5 +1,3 @@
-<!-- eslint-disable vuejs-accessibility/label-has-for -->
-
 <template>
   <section class="catalog">
 

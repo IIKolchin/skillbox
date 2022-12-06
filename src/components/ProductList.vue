@@ -1,7 +1,6 @@
-<!-- eslint-disable vuejs-accessibility/label-has-for -->
 <template>
-  <ul>
-    <ProductItem :products="products" />
+  <ul class="catalog__list">
+    <ProductItem :product="product" v-for="(product, index) in products" :key="index" />
   </ul>
 </template>
 
