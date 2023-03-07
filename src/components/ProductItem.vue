@@ -31,11 +31,6 @@ import gotoPage from '../helpers/gotoPage';
 import numberFormat from '../helpers/numberFormat';
 
 export default {
-  // data() {
-  //   return {
-  //     colors: '#73B6EA',
-  //   };
-  // },
   methods: {
     gotoPage,
   },
