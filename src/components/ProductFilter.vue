@@ -47,8 +47,8 @@
                 class="colors__radio sr-only"
                 type="radio"
                 name="color"
-                :value='color.id'
-                v-model.number='currentColorId'
+                :value="color.id"
+                v-model.number="currentColorId"
               />
               <span class="colors__value" :style="{'background-color': color.code}"> </span>
             </label>
@@ -192,8 +192,8 @@ export default {
     },
   },
   created() {
-    this.loadCategories();
     this.loadColors();
+    this.loadCategories();
   },
 };
 </script>

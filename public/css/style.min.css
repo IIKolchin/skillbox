@@ -1197,3 +1197,24 @@ a {
   color: gray
 }
 /*# sourceMappingURL=style.min.css.map */
+
+.preloader {
+  width: 50px;
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+}
+
+.preloader___cart {
+  width: 50px;
+  position: absolute;
+  top: 40%;
+  left: 25%;
+}
+
+.preloader__header {
+  position: absolute;
+  top: 4%;
+  left: 89%;
+}

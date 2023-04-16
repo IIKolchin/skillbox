@@ -14,7 +14,7 @@
       />
       <section class="catalog">
         <img class="preloader"
-        src="../../public/img/1488.gif"
+        src="@/assets/1488.gif"
         v-if="productsLoading"
         alt="Иконка загрузки"/>
         <div v-if="productsLoadingFailed">Произошла ошибка при загрузке товаров
@@ -83,7 +83,7 @@ export default {
           })
           .catch(() => { this.productsLoadingFailed = true; })
           .then(() => { this.productsLoading = false; });
-      }, 5000);
+      }, 1000);
     },
   },
   watch: {

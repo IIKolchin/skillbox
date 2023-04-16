@@ -14,17 +14,26 @@
       <span class="content__info"> {{ totalAmount }} товара </span>
     </div>
 
+    <img
+      src="../assets/1488.gif"
+      alt="loading"
+      v-show="this.$store.loadCartProducts"
+      class="preloader___cart"
+    />
+
     <section class="cart">
       <form class="cart__form form" action="#" method="POST">
         <div class="cart__field">
           <ul class="cart__list">
-            <CartItem v-for="item in products" :key="item.productId" :item="item"/>
+            <CartItem v-for="item in products" :key="item.productId" :item="item" />
           </ul>
         </div>
 
         <div class="cart__block">
           <p class="cart__desc">Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе</p>
-          <p class="cart__price">Итого: <span>{{ totalPrice | numberFormat }} ₽</span></p>
+          <p class="cart__price">
+            Итого: <span>{{ totalPrice | numberFormat }} ₽</span>
+          </p>
 
           <button class="cart__button button button--primery" type="submit">Оформить заказ</button>
         </div>
@@ -42,7 +51,11 @@ export default {
   filters: { numberFormat },
   components: { CartItem },
   computed: {
-    ...mapGetters({ products: 'cartDetailProducts', totalPrice: 'cartTotalPrice', totalAmount: 'cartTotalAmount' }),
+    ...mapGetters({
+      products: 'cartDetailProducts',
+      totalPrice: 'cartTotalPrice',
+      totalAmount: 'cartTotalAmount',
+    }),
   },
 };
 </script>
