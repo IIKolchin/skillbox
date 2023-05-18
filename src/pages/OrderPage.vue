@@ -19,64 +19,39 @@
     </div>
 
     <section class="cart">
-      <form class="cart__form form" action="#" method="POST">
+      <form class="cart__form form" action="#" method="POST" @submit.prevent="order">
         <div class="cart__field">
           <div class="cart__data">
-            <BaseFormField title="ФИО" :error="formError.name">
-              <input
-                class="form__input"
-                type="text"
-                name="name"
-                placeholder="Введите ваше полное имя"
-                v-model="formData.name"
-              />
-            </BaseFormField>
-
-            <label class="form__label">
-              <input
-                class="form__input"
-                type="text"
-                name="address"
-                placeholder="Введите ваш адрес"
-                v-model="formData.address"
-              />
-              <span class="form__value">Адрес доставки</span>
-              <span class="form__error" v-if="formError.address">{{ formError.address }}</span>
-            </label>
-
-            <label class="form__label">
-              <input
-                class="form__input"
-                type="tel"
-                name="phone"
-                placeholder="Введите ваш телефон"
-                v-model="formData.phone"
-              />
-              <span class="form__value">Телефон</span>
-              <span class="form__error" v-if="formError.phone">{{ formError.phone }}</span>
-            </label>
-
-            <label class="form__label">
-              <input
-                class="form__input"
-                type="email"
-                name="email"
-                placeholder="Введи ваш Email"
-                v-model="formData.email"
-              />
-              <span class="form__value">Email</span>
-              <span class="form__error" v-if="formError.email">{{ formError.email }}</span>
-            </label>
-
-            <BaseFormField title="Комментарий к заказу" :error="formError.comments">
-              <textarea
-                class="form__input form__input--area"
-                name="comments"
-                placeholder="Ваши пожелания"
-                v-model="formData.comments"
-              ></textarea>
-            </BaseFormField>
-
+            <BaseFormText
+              v-model="formData.name"
+              :error="formError.name"
+              title="ФИО"
+              placeholder="Введите ваше полное имя"
+            />
+            <BaseFormText
+              v-model="formData.address"
+              :error="formError.address"
+              title="Адрес доставки"
+              placeholder="Введите ваш адрес"
+            />
+            <BaseFormText
+              v-model="formData.phone"
+              :error="formError.phone"
+              title="Телефон"
+              placeholder="Введите ваш телефон"
+            />
+            <BaseFormText
+              v-model="formData.email"
+              :error="formError.email"
+              title="Email"
+              placeholder="Введи ваш Email"
+            />
+            <BaseFormTextarea
+              title="Комментарий к заказу"
+              v-model="formData.comment"
+              :error="formError.comment"
+              placeholder="Ваши пожелания"
+            />
           </div>
 
           <div class="cart__options">
@@ -122,20 +97,10 @@
 
         <div class="cart__block">
           <ul class="cart__orders">
-            <li class="cart__order">
-              <h3>Смартфон Xiaomi Redmi Note 7 Pro 6/128GB</h3>
-              <b>18 990 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
-            <li class="cart__order">
-              <h3>Гироскутер Razor Hovertrax 2.0ii</h3>
-              <b>4 990 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
-            <li class="cart__order">
-              <h3>Электрический дрифт-карт Razor Lil’ Crazy</h3>
-              <b>8 990 ₽</b>
-              <span>Артикул: 150030</span>
+            <li v-for="item in cartProductsData" :key="item.id" class="cart__order">
+              <h3>{{ item.product.title }}</h3>
+              <b>{{ item.product.price }} ₽</b>
+              <span>Артикул: {{ item.id }}</span>
             </li>
           </ul>
 
@@ -144,11 +109,19 @@
             <p>Итого: <b>3</b> товара на сумму <b>37 970 ₽</b></p>
           </div>
 
-          <button class="cart__button button button--primery" type="submit">Оформить заказ</button>
+          <button class="cart__button button button--primery" type="submit">
+            <span v-if="!formSubmitting">Оформить заказ</span>
+            <img
+            src="@/assets/loader_header.gif"
+            v-if="formSubmitting"
+            alt="Иконка загрузки"
+          />
+          </button>
+
         </div>
-        <div class="cart__error form__error-block">
+        <div class="cart__error form__error-block" v-if="formErrorMessage">
           <h4>Заявка не отправлена!</h4>
-          <p>Похоже произошла ошибка. Попробуйте отправить снова или перезагрузите страницу.</p>
+          <p>{{ formErrorMessage }}</p>
         </div>
       </form>
     </section>
@@ -156,15 +129,55 @@
 </template>
 
 <script>
-import BaseFormField from '../components/BaseFormField.vue';
+import axios from 'axios';
+import { mapState } from 'vuex';
+import BaseFormText from '../components/BaseFormText.vue';
+import BaseFormTextarea from '../components/BaseFormTextarea.vue';
+import API_BASE_URL from '../../../07_api_1/src/config';
 
 export default {
-  components: { BaseFormField },
+  components: { BaseFormText, BaseFormTextarea },
   data() {
     return {
       formData: {},
       formError: {},
+      formErrorMessage: '',
+      formSubmitting: false,
     };
+  },
+  computed: {
+    ...mapState(['cartProductsData']),
+  },
+  methods: {
+    order() {
+      this.formError = {};
+      this.formErrorMessage = '';
+      this.formSubmitting = true;
+
+      axios
+        .post(
+          `${API_BASE_URL}/api/orders`,
+          {
+            ...this.formData,
+          },
+          {
+            params: {
+              userAccessKey: this.$store.state.userAccessKey,
+            },
+          },
+        )
+        .then((res) => {
+          this.formSubmitting = false;
+          this.$store.commit('resetCart');
+          this.$store.commit('updateOrderInfo', res.data);
+          this.$router.push({ name: 'orderInfo', params: { id: res.data.id } });
+        })
+        .catch((error) => {
+          this.formError = error.response.data.error.request || {};
+          this.formErrorMessage = error.response.data.error.message;
+          this.formSubmitting = false;
+        });
+    },
   },
 };
 </script>

@@ -13,8 +13,16 @@ export default new Vuex.Store({
     userAccessKey: null,
     cartProductsData: [],
     loadCartProducts: false,
+    orderInfo: null,
   },
   mutations: {
+    updateOrderInfo(state, orderInfo) {
+      state.orderInfo = orderInfo;
+    },
+    resetCart(state) {
+      state.cartProducts = [];
+      state.cartProductsData = [];
+    },
     updateCartProductAmount(state, { productId, amount }) {
       const item = state.cartProducts.find((el) => el.productId === productId);
 
@@ -66,6 +74,17 @@ export default new Vuex.Store({
 
   },
   actions: {
+    loadOrderInfo(context, orderId) {
+      return axios
+        .get(`${API_BASE_URL}/api/orders/${orderId}`, {
+          params: {
+            userAccessKey: context.state.userAccessKey,
+          },
+        })
+        .then((res) => {
+          context.commit('updateOrderInfo', res.data);
+        });
+    },
     loadCart(context) {
       this.loadCartProducts = true;
       return (new Promise((resolve) => setTimeout(resolve, 2000)))

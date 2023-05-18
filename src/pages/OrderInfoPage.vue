@@ -28,19 +28,19 @@
           <ul class="dictionary">
             <li class="dictionary__item">
               <span class="dictionary__key"> Получатель </span>
-              <span class="dictionary__value"> Иванова Василиса Алексеевна </span>
+              <span class="dictionary__value"> {{ order.name }} </span>
             </li>
             <li class="dictionary__item">
               <span class="dictionary__key"> Адрес доставки </span>
-              <span class="dictionary__value"> Москва, ул. Ленина, 21, кв. 33 </span>
+              <span class="dictionary__value"> {{ order.address }} </span>
             </li>
             <li class="dictionary__item">
               <span class="dictionary__key"> Телефон </span>
-              <span class="dictionary__value"> 8 800 989 74 84 </span>
+              <span class="dictionary__value"> {{ order.phone }} </span>
             </li>
             <li class="dictionary__item">
               <span class="dictionary__key"> Email </span>
-              <span class="dictionary__value"> lalala@mail.ru </span>
+              <span class="dictionary__value"> {{ order.email }} </span>
             </li>
             <li class="dictionary__item">
               <span class="dictionary__key"> Способ оплаты </span>
@@ -52,7 +52,7 @@
         <div class="cart__block">
           <ul class="cart__orders">
             <li
-              v-for="item in cartProductsData"
+              v-for="item in order.basket.items"
               :key="item.id"
               class="cart__order"
             >
@@ -84,6 +84,9 @@ export default {
   },
   computed: {
     ...mapState(['cartProductsData']),
+    order() {
+      return this.$store.state.orderInfo;
+    },
   },
 };
 </script>
